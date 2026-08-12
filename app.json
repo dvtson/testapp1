@@ -8,6 +8,7 @@
     "scheme": "1app",
     "userInterfaceStyle": "automatic",
     "ios": {
+      "bundleIdentifier": "com.app.tests.1",
       "icon": "./assets/expo.icon"
     },
     "android": {
