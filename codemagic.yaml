@@ -41,6 +41,5 @@ workflows:
     publishing:
       app_store_connect:
         # Sử dụng Apple Developer integration được cấu hình trên Codemagic
-        auth:
-          integration: apple
+        auth: integration
         submit_to_testflight: true
