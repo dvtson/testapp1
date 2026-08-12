@@ -1,6 +1,8 @@
 workflows:
   ios-testflight:
     name: Build & Publish to TestFlight
+    integrations:
+      app_store_connect: "Tên API Key của bạn" # <-- ĐỔI THÀNH TÊN KEY BẠN ĐÃ LƯU TRÊN CODEMAGIC
     instance_type: mac_mini_m2
     environment:
       node: latest
