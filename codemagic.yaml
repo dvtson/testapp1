@@ -38,8 +38,8 @@ workflows:
       - name: Build IPA
         script: |
           xcode-project build-ipa \
-            --workspace "ios/1app.xcworkspace" \
-            --scheme "1app"
+            --workspace "ios/rlosdemo.xcworkspace" \
+            --scheme "rlosdemo"
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
