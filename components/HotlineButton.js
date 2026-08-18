@@ -3,7 +3,7 @@ import { TouchableOpacity, StyleSheet, Alert, Linking, View } from 'react-native
 import { Headset } from 'phosphor-react-native';
 import { colors, spacing } from '../constants/theme';
 
-export default function HotlineButton() {
+export default function HotlineButton({ style }) {
   const handlePress = () => {
     Alert.alert(
       "Liên hệ hỗ trợ",
@@ -16,7 +16,7 @@ export default function HotlineButton() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <TouchableOpacity style={styles.button} onPress={handlePress} activeOpacity={0.8}>
         <Headset size={28} color={colors.surface} weight="fill" />
       </TouchableOpacity>

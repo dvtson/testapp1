@@ -11,14 +11,14 @@ import uuid from 'react-native-uuid';
 export const submitApplication = async (data) => {
   try {
     const {
-      qrData, faceImageBase64,
+      qrData, faceImage,
       phoneNumber, loanAmount, loanTermMonths, loanPurpose,
       monthlyIncome, salaryAccountType, incomeProofFile, assetsDescription,
       consentGivenAt
     } = data;
 
     // 1. Xử lý ảnh khuôn mặt (Tạm lưu base64 vào Firestore do giới hạn gói Spark trước đây)
-    const faceImageUrl = `data:image/jpeg;base64,${faceImageBase64}`;
+    const faceImageUrl = `data:image/jpeg;base64,${faceImage}`;
 
     // 2. Xử lý upload bảng lương (nếu có)
     let incomeProofUrl = null;
