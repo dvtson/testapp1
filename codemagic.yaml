@@ -1,6 +1,6 @@
 workflows:
   ios-testflight:
-    name: Build & Publish to TestFlight
+    name: Build iOS & Publish to TestFlight
     integrations:
       app_store_connect: "1app"
     instance_type: mac_mini_m2
@@ -9,16 +9,12 @@ workflows:
       xcode: latest
       cocoapods: default
       groups:
-        # Bạn cần tạo biến môi trường trong giao diện Codemagic
-        # Đặt tên group là "appstore_credentials" hoặc tích hợp trực tiếp Apple Developer Portal
         - appstore_credentials
     scripts:
       - name: Install dependencies
-        script: |
-          npm install
-      - name: Expo Prebuild (Tạo mã nguồn native iOS)
-        script: |
-          npx expo prebuild --platform ios --clean
+        script: npm install
+      - name: Expo Prebuild (iOS)
+        script: npx expo prebuild --platform ios --clean
       - name: Install CocoaPods
         script: |
           cd ios
@@ -26,8 +22,6 @@ workflows:
       - name: Set up Code Signing
         script: |
           keychain initialize
-          # Tự động lấy certificate và provisioning profile từ App Store Connect
-          # (Có cờ --create để Codemagic tự tạo cert nếu bạn dùng Windows và không có file .p12)
           app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)" \
             --type IOS_APP_STORE \
             --create
@@ -45,6 +39,72 @@ workflows:
       - /tmp/xcodebuild_logs/*.log
     publishing:
       app_store_connect:
-        # Sử dụng Apple Developer integration được cấu hình trên Codemagic
+        auth: integration
+        submit_to_testflight: true
+
+  android-apk:
+    name: Build Android APK Only
+    instance_type: mac_mini_m2
+    environment:
+      node: latest
+      java: 17
+    scripts:
+      - name: Install dependencies
+        script: npm install
+      - name: Expo Prebuild (Android)
+        script: npx expo prebuild --platform android --clean
+      - name: Build Android APK
+        script: |
+          cd android
+          ./gradlew assembleRelease
+    artifacts:
+      - android/app/build/outputs/apk/release/*.apk
+
+  both-platforms:
+    name: Build Both & Publish iOS
+    integrations:
+      app_store_connect: "1app"
+    instance_type: mac_mini_m2
+    environment:
+      node: latest
+      xcode: latest
+      cocoapods: default
+      java: 17
+      groups:
+        - appstore_credentials
+    scripts:
+      - name: Install dependencies
+        script: npm install
+      - name: Expo Prebuild (Android & iOS)
+        script: npx expo prebuild --clean
+      - name: Build Android APK
+        script: |
+          cd android
+          ./gradlew assembleRelease
+      - name: Install CocoaPods
+        script: |
+          cd ios
+          pod install
+      - name: Set up Code Signing
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)" \
+            --type IOS_APP_STORE \
+            --create
+          keychain add-certificates
+      - name: Set up code signing settings on Xcode project
+        script: |
+          xcode-project use-profiles
+      - name: Build IPA
+        script: |
+          xcode-project build-ipa \
+            --workspace "ios/rlosdemo.xcworkspace" \
+            --scheme "rlosdemo"
+    artifacts:
+      - android/app/build/outputs/apk/release/*.apk
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
         auth: integration
         submit_to_testflight: true
