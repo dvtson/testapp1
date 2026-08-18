@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
 import { AuthContext } from '../../../context/AuthContext';
 import { db } from '../../../config/firebase';
-import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import { colors, spacing, radius, typography } from '../../../constants/theme';
-import { Plus, SignOut } from 'phosphor-react-native';
+import { Plus, SignOut, Trash } from 'phosphor-react-native';
 
 export default function FinanceHomeScreen({ navigation }) {
   const { user, logout } = useContext(AuthContext);
@@ -48,6 +48,27 @@ export default function FinanceHomeScreen({ navigation }) {
     return unsubscribe;
   }, [user]);
 
+  const handleDeleteTransaction = (id) => {
+    Alert.alert(
+      "Xóa giao dịch",
+      "Bạn có chắc chắn muốn xóa giao dịch này không?",
+      [
+        { text: "Hủy", style: "cancel" },
+        { 
+          text: "Xóa", 
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteDoc(doc(db, 'financeNotes', id));
+            } catch (error) {
+              Alert.alert("Lỗi", "Không thể xóa giao dịch. Vui lòng thử lại.");
+            }
+          }
+        }
+      ]
+    );
+  };
+
   const renderItem = ({ item }) => (
     <View style={styles.transactionCard}>
       <View style={styles.transLeft}>
@@ -59,6 +80,12 @@ export default function FinanceHomeScreen({ navigation }) {
       <Text style={[styles.transAmount, { color: item.type === 'income' ? colors.primaryBlue : colors.primaryRed }]}>
         {item.type === 'income' ? '+' : '-'}{item.amount.toLocaleString('vi-VN')} đ
       </Text>
+      <TouchableOpacity 
+        style={styles.deleteButton}
+        onPress={() => handleDeleteTransaction(item.id)}
+      >
+        <Trash size={20} color={colors.primaryRed} weight="regular" />
+      </TouchableOpacity>
     </View>
   );
 
@@ -182,6 +209,7 @@ const styles = StyleSheet.create({
   },
   transLeft: {
     flex: 1,
+    paddingRight: spacing.sm,
   },
   transNote: {
     fontFamily: typography.medium,
@@ -197,6 +225,10 @@ const styles = StyleSheet.create({
   transAmount: {
     fontFamily: typography.semiBold,
     fontSize: 16,
+    marginRight: spacing.sm,
+  },
+  deleteButton: {
+    padding: spacing.xs,
   },
   emptyText: {
     fontFamily: typography.regular,

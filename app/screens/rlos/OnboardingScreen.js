@@ -1,7 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Image, SafeAreaView } from 'react-native';
-import { Lightning, IdentificationCard, ShieldCheck } from 'phosphor-react-native';
+import { Lightning, IdentificationCard, ShieldCheck, SignOut } from 'phosphor-react-native';
 import { colors, spacing, radius, typography } from '../../../constants/theme';
+import { AuthContext } from '../../../context/AuthContext';
 
 const { width } = Dimensions.get('window');
 
@@ -29,6 +30,7 @@ const SLIDES = [
 export default function OnboardingScreen({ navigation }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollViewRef = useRef(null);
+  const { logout } = useContext(AuthContext);
 
   const handleScroll = (event) => {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
@@ -52,16 +54,22 @@ export default function OnboardingScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header: Logo và nút Bỏ qua */}
+      {/* Header: Logo và nút Đăng xuất / Bỏ qua */}
       <View style={styles.header}>
         <Image 
           source={require('../../../assets/images/vrb-logo.png')}
           style={styles.logo}
           resizeMode="contain"
         />
-        <TouchableOpacity onPress={handleSkip} style={styles.skipBtn}>
-          <Text style={styles.skipText}>Bỏ qua</Text>
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
+            <SignOut size={20} color={colors.primaryRed} weight="bold" />
+            <Text style={styles.logoutText}>Đăng xuất</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleSkip} style={styles.skipBtn}>
+            <Text style={styles.skipText}>Bỏ qua</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Carousel */}
@@ -127,8 +135,24 @@ const styles = StyleSheet.create({
     width: 120,
     aspectRatio: 1417 / 856, // Giữ đúng tỷ lệ gốc ~1.65:1
   },
+  headerActions: {
+    alignItems: 'flex-end',
+  },
+  logoutBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: spacing.sm,
+    marginBottom: 4,
+  },
+  logoutText: {
+    fontFamily: typography.semiBold,
+    color: colors.primaryRed,
+    fontSize: 14,
+    marginLeft: 4,
+  },
   skipBtn: {
     padding: spacing.sm,
+    paddingTop: 0,
   },
   skipText: {
     fontFamily: typography.medium,

@@ -120,7 +120,7 @@ export default function ApplicationHistoryScreen({ navigation }) {
         </View>
       </LinearGradient>
 
-      <View style={{ marginTop: -80, flex: 1, backgroundColor: colors.appBackground, borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingTop: 16 }}>
+      <View style={{ marginTop: -30, flex: 1, backgroundColor: colors.appBackground, borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingTop: 16 }}>
       {applications.length > 0 ? (
         <FlatList
           data={applications}
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.appBackground,
   },
   headerBackground: {
-    height: 180,
+    height: 200,
     paddingTop: 60,
     paddingHorizontal: spacing.lg,
   },

@@ -68,7 +68,7 @@ export default function OtpScreen({ navigation }) {
             <View style={styles.inputWrapper}>
               <TextInput
                 style={styles.input}
-                placeholder="Nhập mã OTP (VD: 123456)"
+                placeholder="Nhập mã OTP"
                 placeholderTextColor={colors.placeholderText}
                 keyboardType="number-pad"
                 value={inputOtp}
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontFamily: typography.bold,
-    fontSize: 24,
+    fontSize: 20,
     letterSpacing: 4,
     color: colors.headingText,
     paddingHorizontal: spacing.md,
