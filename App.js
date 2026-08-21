@@ -10,6 +10,7 @@ import { colors } from './constants/theme';
 
 // --- AUTH SCREENS ---
 import LoginScreen from './app/screens/auth/LoginScreen';
+import RegisterScreen from './app/screens/auth/RegisterScreen';
 
 // --- FINANCE SCREENS (VỎ BỌC) ---
 import FinanceHomeScreen from './app/screens/finance/FinanceHomeScreen';
@@ -34,6 +35,7 @@ const Stack = createNativeStackNavigator();
 const AuthStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Login" component={LoginScreen} />
+    <Stack.Screen name="Register" component={RegisterScreen} />
   </Stack.Navigator>
 );
 
@@ -85,6 +87,15 @@ const AuthGateway = () => {
 
   // Chưa đăng nhập -> Vào cổng vỏ bọc (Login)
   if (!user) return <AuthStack />;
+
+  // Đang đợi Firebase trả về phân quyền (tránh hiện tượng nháy app Finance)
+  if (user && !role) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.appBackground }}>
+        <ActivityIndicator size="large" color={colors.primaryBlue} />
+      </View>
+    );
+  }
 
   // Đăng nhập bằng tài khoản bí mật -> Vào RLOS
   if (role === 'admin') return <RLOSStack />;

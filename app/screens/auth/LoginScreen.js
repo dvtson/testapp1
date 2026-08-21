@@ -4,7 +4,7 @@ import { AuthContext } from '../../../context/AuthContext';
 import { colors, spacing, radius, typography } from '../../../constants/theme';
 import { LockKey, EnvelopeSimple } from 'phosphor-react-native';
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -79,6 +79,13 @@ export default function LoginScreen() {
             <Text style={styles.buttonText}>Đăng nhập</Text>
           )}
         </TouchableOpacity>
+
+        <View style={styles.registerContainer}>
+          <Text style={styles.registerText}>Chưa có tài khoản? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+            <Text style={styles.registerLink}>Đăng ký ngay</Text>
+          </TouchableOpacity>
+        </View>
       </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -149,5 +156,20 @@ const styles = StyleSheet.create({
     fontFamily: typography.semiBold,
     color: colors.surface,
     fontSize: 16,
+  },
+  registerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: spacing.xl,
+  },
+  registerText: {
+    fontFamily: typography.regular,
+    color: colors.secondaryText,
+    fontSize: 14,
+  },
+  registerLink: {
+    fontFamily: typography.semiBold,
+    color: colors.primaryBlue,
+    fontSize: 14,
   },
 });
